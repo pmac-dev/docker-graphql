@@ -13,6 +13,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    # name checkout code, coge el codigo de nuestro repo
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+      # fetch depth, para que vaya muy dentro en la busqueda de nuestros commits
+        fetch-depth: 0
+     # Ahora se autentica con Docker hub
+    - name: Docker Login
+      env:
+      # ${{ secrets.DOCKER_USER }} lo coge de los secrets de github actions
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo "Iniciando login"
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD      
+        echo "Fin del login"
+#     - name: Build the Docker image
+#       run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
